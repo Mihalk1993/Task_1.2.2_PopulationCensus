@@ -34,9 +34,16 @@ public class Main {
 //        Вывод в консоль при необходимости:
         System.out.println("\nВоеннообязанные товарищи: \n" + conscripts);
 
-        //        Выявление и вывод в консоль фамилий потенциально работоспособных людей с высшим образованием:
+//        Выявление и вывод в консоль фамилий потенциально работоспособных людей с высшим образованием:
         List<Person> workableEducatedPersons = persons.stream()
                 .filter(person -> person.getAge() >= 18)
+                .filter(person -> {
+                    if (person.getSex() == Sex.MAN) {
+                        return person.getAge() < 65;
+                    } else {
+                        return person.getAge() < 60;
+                    }
+                })
                 .filter(person -> person.getEducation() == Education.HIGHER)
                 .sorted(Comparator.comparing(person -> person.getSurname()))
                 .collect(Collectors.toList());
