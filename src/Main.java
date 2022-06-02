@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -16,26 +17,30 @@ public class Main {
                     Education.values()[new Random().nextInt(Education.values().length)])
             );
         }
-        List<Integer> personAges = new ArrayList<>();
-        for (Person person : persons) {
-            personAges.add(person.getAge());
-        }
 
-        long teensAmount = personAges.stream()
-                .filter(x -> x < 18)
+//        Подсчёт количества несовершеннолетних:
+        long teensAmount = persons.stream()
+                .filter(person -> person.getAge() < 18)
                 .count();
         System.out.println("Количество несовершеннолетних - " + teensAmount + " человек");
 
-//        Map<String, Integer> conscripts = new HashMap<>();
-//        for (Person person : persons) {
-//            conscripts.put(person.getSurname(), person.getAge());
-//        }
-//
-//        conscripts.entrySet().stream()
-//                .map()
-//
-//        persons.stream()
-//                .filter(person -> person.getAge() < 18)
-//                .map(person -> person.getSurname())
+//        Выявление и вывод в консоль фамилий призывников:
+        List<String> conscripts = persons.stream()
+                .filter(person -> person.getSex() == Sex.MAN)
+                .filter(person -> person.getAge() >= 18)
+                .filter(person -> person.getAge() < 27)
+                .map(person -> person.getSurname())
+                .collect(Collectors.toList());
+//        Вывод в консоль при необходимости:
+        System.out.println("\nВоеннообязанные товарищи: \n" + conscripts);
+
+        //        Выявление и вывод в консоль фамилий потенциально работоспособных людей с высшим образованием:
+        List<Person> workableEducatedPersons = persons.stream()
+                .filter(person -> person.getAge() >= 18)
+                .filter(person -> person.getEducation() == Education.HIGHER)
+                .sorted(Comparator.comparing(person -> person.getSurname()))
+                .collect(Collectors.toList());
+//        Вывод в консоль при необходимости:
+        System.out.println("\nРаботоспособные товарищи с высшим образованием: \n" + workableEducatedPersons);
     }
 }
